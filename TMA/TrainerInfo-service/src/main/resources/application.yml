@@ -1,0 +1,29 @@
+#spring:
+#  application:
+#    name: TrainerInfo-service
+#  config:
+#    import: optional:configserver:http://localhost:8088
+
+spring:
+  application:
+    name: TrainerInfo-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/training
+    username: root
+    password: pass@word1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  cloud:
+    config:
+      import-check:
+        enabled: false
+
+server:
+  port: 9095
