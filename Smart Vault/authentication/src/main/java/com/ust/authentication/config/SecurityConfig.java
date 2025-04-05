@@ -15,11 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter; // Custom JWT filter
+//    private final JwtAuthFilter jwtAuthFilter; // Custom JWT filter
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
-        this.jwtAuthFilter = jwtAuthFilter;
+    public SecurityConfig( UserDetailsService userDetailsService) {
+//        this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
     }
 
@@ -28,12 +28,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/card").permitAll() // Allow card authentication without authentication
-                        .requestMatchers("/pin").authenticated() // Secure PIN authentication
+                        .requestMatchers("/auth/card","/auth").permitAll() // Allow card authentication without authentication
+                        .requestMatchers("/auth/pin").authenticated() // Secure PIN authentication
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
