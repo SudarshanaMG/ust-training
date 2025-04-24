@@ -1,13 +1,13 @@
 package com.ust.authentication.dto;
 
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PinAuthRequest {
 
     @Pattern(regexp = "^[0-9]{16}$", message = "Card number must be exactly 16 digits")

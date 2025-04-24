@@ -1,12 +1,9 @@
 package com.example.TrainingInfo.controller;
 
-import com.example.TrainerInfo_service.model.TrainerInfo;
-import com.example.TrainingInfo.dto.Responsedto;
-import com.example.TrainingInfo.dto.Trainingdto;
 import com.example.TrainingInfo.model.TrainingIn;
-import com.example.TrainingInfo.service.TrainerSearchService;
 import com.example.TrainingInfo.service.TrainingInService;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,52 +11,55 @@ import java.util.List;
 @RestController
 @RequestMapping("/trainings")
 public class TrainingInController {
-    private final TrainingInService trainingService;
-    private final TrainerSearchService trainerSearchService;
+    @Autowired
+    private TrainingInService trainingService;
 
-    public TrainingInController(TrainingInService trainingService, TrainerSearchService trainerSearchService) {
-        this.trainingService = trainingService;
-        this.trainerSearchService = trainerSearchService;
-    }
-
+    // Create training (auto-assigns trainer if available)
     @PostMapping
-    public ResponseEntity<Trainingdto> addTraining(@RequestBody TrainingIn request) {
-        return ResponseEntity.ok(trainingService.addTraining(request));
+    public TrainingIn createTraining(@Valid @RequestBody TrainingIn training) {
+        return trainingService.createTraining(training);
     }
 
+    // Get all trainings
     @GetMapping
-    public ResponseEntity<List<Trainingdto>> getAllTrainings() {
-        return ResponseEntity.ok(trainingService.getAllTrainings());
+    public List<TrainingIn> getAllTrainings() {
+        return trainingService.getAllTrainings();
     }
 
+    // Get training by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Trainingdto> getTrainingById(@PathVariable Long id) {
-        return trainingService.getTrainingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public TrainingIn getTrainingById(@PathVariable Long id) throws Exception {
+        return trainingService.getTrainingById(id);
     }
 
-    @GetMapping("/find-trainers")
-    public ResponseEntity<List<TrainerInfo>> findTrainersForTraining(@RequestParam int budget, Long trainingId){
-        List<String> trainingSkills = getTrainingSkills(trainingId);
-        List<TrainerInfo> trainers = trainerSearchService.getMatchingTrainers(budget, trainingSkills);
-        return ResponseEntity.ok(trainers);
+    // Get trainings by trainer ID
+    @GetMapping("/trainer/{id}")
+    public List<TrainingIn> getTrainingByTrainerId(@PathVariable Long id) {
+        return trainingService.getTrainingByTrainerId(id);
     }
 
-    private List<String> getTrainingSkills(Long trainingId){
-        return trainingService.getTrainingSkillsById(trainingId);
+    // Get trainings by vendor ID
+    @GetMapping("/vendor/{id}")
+    public List<TrainingIn> getByVendorId(@PathVariable Long id) {
+        return trainingService.getByVendorID(id);
     }
 
+    // Update training
     @PutMapping("/{id}")
-    public ResponseEntity<Trainingdto> updateTraining(@PathVariable Long id, @RequestBody Responsedto request) {
-        Trainingdto updated = trainingService.updateTraining(id, request);
-        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
+    public TrainingIn updateTraining(@PathVariable Long id, @Valid @RequestBody TrainingIn trainingDetails) throws Exception {
+        return trainingService.updateTraining(id, trainingDetails);
     }
 
+    // Delete training
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTraining(@PathVariable Long id) {
+    public void deleteTraining(@PathVariable Long id) throws Exception {
         trainingService.deleteTraining(id);
-        return ResponseEntity.noContent().build();
+    }
+
+    // Assign a trainer manually
+    @PostMapping("/{trainingId}/assign-trainer/{trainerId}")
+    public String assignTrainer(@PathVariable Long trainingId, @PathVariable Long trainerId) throws Exception {
+        return trainingService.assignTrainer(trainingId, trainerId);
     }
 }
 

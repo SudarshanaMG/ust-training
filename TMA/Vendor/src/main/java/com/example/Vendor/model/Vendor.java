@@ -1,11 +1,10 @@
 package com.example.Vendor.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
@@ -13,20 +12,35 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "vendor")
 public class Vendor {
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long vendorId;
+
+    @NotBlank(message = "Vendor name is required")
     private String name;
-    private String contactEmail;
-    private String contactPhone;
-    private String code;
+
+    @Email(message = "Invalid email format")
+    private String email;
+
+    @Pattern(regexp = "\\d{10}", message = "Invalid phone number")
+    private String phone;
+
     private String website;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<ContactPerson> contactPersons;
+
+    @NotBlank(message = "Address is required")
     private String address;
-    private String country;
-    private List<String> contactPersons;
-    private String ceo;
+
+    //    @Pattern(regexp = "\\[0-9A-Z]", message = "Invalid GSTIN")
+    private String GSTIN;
+
+    @NotBlank(message = "Head office location is required")
+    private String headOfficeLocation;
+
 }

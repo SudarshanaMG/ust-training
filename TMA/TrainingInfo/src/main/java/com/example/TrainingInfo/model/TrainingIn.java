@@ -18,10 +18,10 @@ public class TrainingIn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long trainingId;
 
     @NotBlank(message = "Training name is required")
-    private String name;
+    private String trainingName;
 
     @ElementCollection
     @NotEmpty(message = "At least one skill is required")
@@ -42,8 +42,8 @@ public class TrainingIn {
     @Min(value = 1, message = "Number of students per batch must be at least 1")
     private long noOfStudentsPerBatch;
 
-    @NotBlank(message = "Organization name is required")
-    private String organization;
+//    @NotBlank(message = "Organization name is required")
+//    private String organization;
 
     @Positive(message = "Budget must be positive")
     private double budget;
@@ -59,18 +59,36 @@ public class TrainingIn {
 
     @NotBlank(message = "Point of contact (POC) is required")
     private String poc;
-    private Long trainerId;
+
+    @Enumerated(EnumType.STRING)
+    private StudentType studentType;
 
     @Enumerated(EnumType.STRING)
     private TrainingStatus status;
+    @Enumerated(EnumType.STRING)
+    private TrainingType type;
+
+    @Column(nullable = true)
+    private Long trainerId;
+    @NotNull(message = "Vendor Id is required")
+    private Long vendorId;
+
+    public enum TrainingType {
+        ONLINE, OFFLINE
+    }
 
     public enum DurationType {
         HOURS, DAYS, MONTHS
     }
 
+    public enum StudentType {
+        FRESHER, LATERAL
+    }
+
     public enum TrainingStatus {
         ON_HOLD, IN_PROGRESS, COMPLETED, UPCOMING
     }
+
 
 }
 

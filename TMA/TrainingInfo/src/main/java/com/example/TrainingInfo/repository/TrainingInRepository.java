@@ -10,9 +10,7 @@ import java.util.List;
 
 @Repository
 public interface TrainingInRepository extends JpaRepository<TrainingIn, Long> {
-    List<TrainingIn> findByStartDateBetween(LocalDate startDate, LocalDate endDate);
-    List<TrainingIn> findByStartDate(LocalDate startDate);
-//    @Query("SELECT t FROM Training t JOIN t.skills s WHERE s IN :skills")
-//    List<TrainingIn> findBySkills(List<String> skills);
-    List<TrainingIn> findByOrganization(String organization);
+    int countByTrainerId(Long trainerId);
+    List<TrainingIn> findByTrainerId(Long trainerId);
+    List<TrainingIn> findByVendorId(Long vendorId);
 }

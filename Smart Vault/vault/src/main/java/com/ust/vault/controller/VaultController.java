@@ -22,8 +22,8 @@ public class VaultController {
         private VaultClient vaultClient;
 
         @PostMapping("/access")
-        public ResponseEntity<?> accessVault(@RequestBody VaultAccessRequest request) {
-            ResponseEntity<AuthResponse> response = authClient.authenticatePin(
+        public ResponseEntity<?> accessVault(@RequestHeader("Authorization") String token, @RequestBody VaultAccessRequest request) {
+            ResponseEntity<AuthResponse> response = authClient.authenticatePin(token,
                     new PinAuthRequest(request.getCardNumber(), request.getPin()));
 
             if (response.getStatusCode() == HttpStatus.OK) {
